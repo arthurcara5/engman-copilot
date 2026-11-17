@@ -1,0 +1,61 @@
+=====================================================================
+ENTREGA — CHALLENGE INTEGRADOR (SPRINT 01)
+EngMan Copilot — FIAP x Motiva Rodovias (Engenharia de Manutenção: PRIME e MIND)
+=====================================================================
+
+IDENTIFICAÇÃO DO GRUPO
+- Grupo / Turma: Turma 1CCPS
+- Integrantes (Nome Completo - RM):
+    1. Arthur Cara Souza - RM 576504
+    2. José Renato Karabachian Aparício - RM 567225
+- Link do repositório GitHub (público): https://github.com/arthurcara5/engman-copilot
+
+RECORTE E ESCOPO
+- Recorte: A — Diagnóstico e Confiabilidade (aderente ao Tema 2)
+- Ativos ITS do recorte (3): CFTV (câmeras PTZ), Pórticos Free Flow e HS WIM
+- Persona principal: Engenheiro de Manutenção
+- Persona secundária: Técnico de Campo
+- Natureza da entrega: projeto arquitetural e documental (sem código e sem chave de API).
+  Todos os dados de ativos são DADO SIMULADO.
+
+ARTEFATOS ENTREGUES (caminhos no repositório)
+- README.md ................................ 14 seções + wireframe (Anexo A) + política de contexto (Anexo B) + checklist
+- .gitignore
+- docs/arquitetura.png ..................... exportado de docs/arquitetura.mmd (8 blocos)
+- docs/arquitetura.mmd ..................... código Mermaid (fonte do diagrama)
+- docs/riscos_lgpd.md ...................... matriz com 8 riscos, impacto, mitigação, rastreabilidade e LGPD
+- docs/decisoes_tecnicas.md ................ 3 LLMs, 2 vector stores, parâmetros e política de tokens
+- prompts/system_prompt.md ................. 7 blocos + justificativas + Few-Shot + CoT
+- evals/sprint1_eval_set.json .............. 14 casos, 8 categorias
+- data/knowledge_base/inventario.md ........ 14 documentos, chunking, metadados, 4 ativos simulados
+- tools/tools_spec.json .................... 4 tools obrigatórias + 2 diferenciais
+
+DECISÕES-CHAVE
+- Stack 100% gratuita: Llama 3.1 8B via Ollama (padrão), Qwen 2.5 14B (upgrade),
+  ChromaDB, embeddings nomic-embed-text.
+- Inferência: temperature 0,2 / top_p 0,9 / max_tokens 900 / num_ctx 16.384.
+- RAG: chunks de ~320 tokens (overlap ~50) e 1 registro por chunk para FSM/catálogo/boletins;
+  top_k = 4 com filtro por TAG e tipo_ativo.
+- Segurança: recusa padrão (R01), proibição de laudo/ART (R02), NR-10/NR-35 inegociáveis (R03),
+  defesa contra prompt injection (R05), confirmação explícita para abrir OS (R12),
+  FATO x HIPÓTESE (R06) e nível de confiança obrigatório (R10).
+
+COERÊNCIA CRUZADA (RASTREABILIDADE)
+- Recusas do README (seção 5) = regras R01 a R05, R07, R08, R12 a R15 do system_prompt.md.
+- Cada um dos 8 riscos tem ao menos um caso no eval set (mapa em docs/riscos_lgpd.md).
+- Os 8 blocos do fluxograma refletem as regras do prompt e as 6 tools do tools_spec.json.
+- Sem capacidade órfã: toda resposta prometida vem do RAG (inventario.md) ou de uma tool.
+
+BÔNUS (+10 pontos)
+- Bônus 1 (+2): 4 ativos sintéticos ricos ........ data/knowledge_base/inventario.md (seção 6)
+- Bônus 2 (+2): Few-Shot e CoT no prompt .......... prompts/system_prompt.md (bloco FORMATO)
+- Bônus 3 (+2): λ, R(t)=e^(-λt), RGA e LDA ........ system_prompt.md + tool calcular_metricas_confiabilidade
+- Bônus 4 (+2): wireframe ASCII da interface ...... README.md (Anexo A)
+- Bônus 5 (+2): política de contexto quantificada . docs/decisoes_tecnicas.md (seção 5) e README (Anexo B)
+
+LIMITAÇÕES CONHECIDAS (resumo)
+- Sem implementação (apenas documentação); dados simulados; estimativas de tokens por heurística;
+  modelos locais pequenos podem falhar sob prompts longos; sem validação jurídica formal da LGPD.
+  Detalhes na seção 13 do README.
+
+=====================================================================

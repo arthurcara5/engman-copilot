@@ -1,0 +1,25 @@
+# Segredos e credenciais
+.env
+.env.*
+*.key
+*.pem
+
+# Python (nesta fase não há código; bloqueia qualquer script acidental)
+__pycache__/
+*.pyc
+*.py
+
+# Notebooks
+.ipynb_checkpoints/
+*.ipynb
+
+# Bancos vetoriais e artefatos locais
+chroma_db/
+.chroma/
+*.sqlite3
+
+# Sistema operacional e editores
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

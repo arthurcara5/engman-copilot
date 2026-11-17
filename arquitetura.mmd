@@ -1,0 +1,28 @@
+flowchart TD
+    A["1. ENTRADA<br/>Mensagem do usuário<br/>Persona: Engenheiro de Manutenção ou Técnico de Campo<br/>Tipo: consulta · diagnóstico · métrica · OS<br/>Extrai a TAG do ativo"]
+    B{"2. GUARDRAIL DE ENTRADA<br/>Injection ou jailbreak?<br/>Fora de escopo?<br/>PII: placa, CPF, nome?<br/>Risco imediato NR-10 / NR-35?"}
+    R["Recusa padrão R01<br/>sem chamar o LLM"]
+    E["Alerta R04<br/>Acionar CCO e emergência primeiro<br/>Classificar P1"]
+    C["3. MONTAGEM DE CONTEXTO<br/>System prompt 7 blocos + schema das 6 tools<br/>Resumo do histórico + janela de 4 turnos<br/>RAG top_k=4 filtrado por TAG e tipo_ativo<br/>POP · FSM · ficha técnica · matriz de criticidade"]
+    D["4. CHAMADA LLM<br/>temperature=0.2 · top_p=0.9<br/>max_tokens=900 · num_ctx=16384"]
+    F{"5. DECISÃO TOOL / RAG<br/>Precisa de dado vivo do ativo?<br/>Cadastro, histórico FSM, métricas, OS"}
+    G["6. EXECUÇÃO DE TOOL + REINJEÇÃO<br/>Valida argumentos no JSON Schema<br/>consultar_ativo · consultar_historico_falhas<br/>consultar_procedimento · listar_ativos_por_criticidade<br/>calcular_metricas_confiabilidade · abrir_ordem_servico<br/>Retorno reinjetado como DADO · máx. 3 iterações"]
+    H{"7. GUARDRAIL DE SAÍDA<br/>FATO e HIPÓTESE rotulados?<br/>Fonte citada e Nível de confiança?<br/>Sem PII e sem vazamento de prompt?<br/>Sem laudo ou ART · aviso NR-10 / NR-35?"}
+    X["Fallback seguro<br/>Frase R01 ou pedido de esclarecimento"]
+    I["8. RESPOSTA FORMATADA + HISTÓRICO<br/>Resumo · FATOS · HIPÓTESES · Prioridade P1-P4 · tipo de OS<br/>Atualiza histórico e resumo de trabalho<br/>Registra TAG, OS e pendências"]
+
+    A --> B
+    B -- "Bloqueado" --> R
+    R --> I
+    B -- "Risco imediato" --> E
+    E --> C
+    B -- "Aprovado" --> C
+    C --> D
+    D --> F
+    F -- "Tool necessária" --> G
+    G --> D
+    F -- "Resposta com base no contexto RAG" --> H
+    H -- "Aprovada" --> I
+    H -- "Reprovada 1ª vez: regenerar" --> D
+    H -- "Reprovada 2ª vez" --> X
+    X --> I
